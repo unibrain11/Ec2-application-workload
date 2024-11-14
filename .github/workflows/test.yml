@@ -1,0 +1,28 @@
+name: Terragrunt Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  TERRAGRUNT_LOG_LEVEL: info
+  TERRAGRUNT_NON_INTERACTIVE: true  # Enable non-interactive mode for CI/CD
+  TF_IN_AUTOMATION: true        	# Disable interactive prompts in Terraform
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.7 # Replace with your Terraform version
+      - name: Install Terragrunt
+        run: |
+          curl -LO https://github.com/gruntwork-io/terragrunt/releases/latest/download/terragrunt_linux_amd64
+          sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
+          chmod +x /usr/local/bin/terragrunt
+          terragrunt --version
